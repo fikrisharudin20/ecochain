@@ -10,7 +10,7 @@ async function main() {
   const Store = await ethers.getContractFactory("Store");
 
   // deploy contracts
-  const store = await Store.deploy('Freshers', feeAccount, 10);
+  const store = await Store.deploy('Gamer', feeAccount, 10);
 
   // Save copies of each contracts abi and address to the frontend.
   saveFrontendUtils(store , "Store");
