@@ -56,7 +56,7 @@ contract Store {
         returns (bool success)
     {
         // Validating payments
-        require(msg.value > 0, "Ethers cannot be zerro!");
+        require(msg.value > 0, "Ethers cannot be zero!");
         require(msg.sender != storeOwner, "Sale Not allowed");
 
         // Calculating up cost and fee
