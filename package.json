@@ -9,6 +9,9 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
+    "@cometchat-pro/chat": "^3.0.13",
+    "@material-tailwind/react": "^2.1.10",
+    "firebase": "^11.1.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-hooks-global-state": "^1.0.2",
