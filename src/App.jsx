@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Web3 from "web3";
+import { AppBar, Toolbar, Typography, Container, Button, Grid, Paper, List, ListItem, ListItemText, TextField } from "@mui/material";
 
 const App = () => {
   const [account, setAccount] = useState("");
@@ -68,110 +69,105 @@ const App = () => {
   };
 
   return (
-    <div className="App" style={{ textAlign: "center", padding: "20px" }}>
-      <header style={{ backgroundColor: "#282c34", padding: "10px", color: "white" }}>
-        <h1>Decentralized E-commerce Platform</h1>
-        <button onClick={connectWallet} style={{ marginTop: "10px", padding: "10px" }}>
-          {account ? `Connected: ${account.slice(0, 6)}...${account.slice(-4)}` : "Connect Wallet"}
-        </button>
-      </header>
-
-      <main style={{ marginTop: "20px" }}>
-        <section>
-          <h2>Sell an Item</h2>
-          <input
-            type="text"
-            placeholder="Item Name"
-            value={itemName}
-            onChange={(e) => setItemName(e.target.value)}
-            style={{ margin: "5px", padding: "10px" }}
-          />
-          <input
-            type="number"
-            placeholder="Price (ETH)"
-            value={itemPrice}
-            onChange={(e) => setItemPrice(e.target.value)}
-            style={{ margin: "5px", padding: "10px" }}
-          />
-          <input
-            type="file"
-            onChange={(e) => setItemImage(e.target.files[0])}
-            style={{ margin: "5px", padding: "10px" }}
-          />
-          <button onClick={listItem} style={{ margin: "5px", padding: "10px" }}>
-            List Item
-          </button>
-        </section>
-
-        <section style={{ marginTop: "40px" }}>
-          <h2>Marketplace</h2>
-          {items.length > 0 ? (
-            items.map((item, index) => (
-              <div
-                key={index}
-                style={{
-                  border: "1px solid #ddd",
-                  padding: "10px",
-                  margin: "10px",
-                  borderRadius: "5px",
-                  display: "inline-block",
-                  textAlign: "left",
-                  width: "200px",
-                }}
-              >
-                <img src={item.image} alt={item.name} style={{ width: "100%" }} />
-                <h3>{item.name}</h3>
-                <p>Price: {item.price} ETH</p>
-                <p>Status: {item.sold ? "Sold" : "Available"}</p>
-                {!item.sold && (
-                  <>
-                    <button onClick={() => addToCart(index)} style={{ padding: "5px" }}>
-                      Add to Cart
-                    </button>
-                    <button onClick={() => buyItem(index)} style={{ padding: "5px", marginLeft: "5px" }}>
-                      Buy Now
-                    </button>
-                  </>
+    <div>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" style={{ flexGrow: 1 }}>
+            EcoChain
+          </Typography>
+          <Button color="inherit" onClick={connectWallet}>
+            Connect Wallet
+          </Button>
+        </Toolbar>
+      </AppBar>
+      <Container>
+        <Typography variant="h4" gutterBottom>
+          Welcome to EcoChain
+        </Typography>
+        <Typography variant="h6" gutterBottom>
+          Account: {account}
+        </Typography>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={6}>
+            <Paper style={{ padding: 16 }}>
+              <Typography variant="h6">List an Item</Typography>
+              <form onSubmit={(e) => { e.preventDefault(); listItem(); }}>
+                <TextField
+                  label="Item Name"
+                  fullWidth
+                  value={itemName}
+                  onChange={(e) => setItemName(e.target.value)}
+                  margin="normal"
+                />
+                <TextField
+                  label="Item Price"
+                  fullWidth
+                  value={itemPrice}
+                  onChange={(e) => setItemPrice(e.target.value)}
+                  margin="normal"
+                />
+                <Button variant="contained" component="label" fullWidth>
+                  Upload Image
+                  <input
+                    type="file"
+                    hidden
+                    onChange={(e) => setItemImage(e.target.files[0])}
+                  />
+                </Button>
+                <Button type="submit" variant="contained" color="primary" fullWidth style={{ marginTop: 16 }}>
+                  List Item
+                </Button>
+              </form>
+            </Paper>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Paper style={{ padding: 16 }}>
+              <Typography variant="h6">Items</Typography>
+              <List>
+                {items.length > 0 ? (
+                  items.map((item, index) => (
+                    <ListItem key={index}>
+                      <img src={item.image} alt={item.name} style={{ width: 50, height: 50, marginRight: 16 }} />
+                      <ListItemText primary={item.name} secondary={`Price: ${item.price}`} />
+                      <Button variant="contained" color="primary" onClick={() => addToCart(index)}>
+                        Add to Cart
+                      </Button>
+                    </ListItem>
+                  ))
+                ) : (
+                  <Typography>No items listed.</Typography>
                 )}
-              </div>
-            ))
-          ) : (
-            <p>No items listed yet.</p>
-          )}
-        </section>
-
-        <section style={{ marginTop: "40px" }}>
-          <h2>Shopping Cart</h2>
+              </List>
+            </Paper>
+          </Grid>
+        </Grid>
+        <section>
+          <Typography variant="h6" gutterBottom>
+            Cart
+          </Typography>
           {cart.length > 0 ? (
-            <>
+            <List>
               {cart.map((item, index) => (
-                <div
-                  key={index}
-                  style={{
-                    border: "1px solid #ddd",
-                    padding: "10px",
-                    margin: "10px",
-                    borderRadius: "5px",
-                    display: "inline-block",
-                    textAlign: "left",
-                    width: "200px",
-                  }}
-                >
-                  <img src={item.image} alt={item.name} style={{ width: "100%" }} />
-                  <h3>{item.name}</h3>
-                  <p>Price: {item.price} ETH</p>
-                </div>
+                <ListItem key={index}>
+                  <ListItemText primary={item.name} secondary={`Price: ${item.price}`} />
+                </ListItem>
               ))}
-              <p>Total Price: {totalPrice.toFixed(2)} ETH</p>
-              <button onClick={buyCart} style={{ padding: "10px" }}>
-                Buy All
-              </button>
-            </>
+            </List>
           ) : (
-            <p>Your cart is empty.</p>
+            <Typography>Your cart is empty.</Typography>
+          )}
+          {cart.length > 0 && (
+            <Button variant="contained" color="primary" onClick={buyCart} style={{ marginTop: 16 }}>
+              Purchase Items
+            </Button>
           )}
         </section>
-      </main>
+      </Container>
+      <footer style={{ marginTop: 16, padding: 16, textAlign: 'center', backgroundColor: '#f1f1f1' }}>
+        <Typography variant="body2" color="textSecondary">
+          &copy; 2023 EcoChain. All rights reserved.
+        </Typography>
+      </footer>
     </div>
   );
 };
