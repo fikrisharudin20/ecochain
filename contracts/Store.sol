@@ -37,6 +37,27 @@ contract Store {
 
     SalesStruct[] sales;
 
+    struct Item {
+    uint256 id;
+    address seller;
+    string name;
+    uint256 price;
+    string image;
+    bool sold;
+    }
+
+    mapping(uint256 => Item) public items;
+    uint256 public itemCount;
+
+    event ItemListed(
+    uint256 id,
+    address indexed seller,
+    string name,
+    uint256 price,
+    string image,
+    uint256 timestamp
+    );
+
     // Initializing the store
     constructor(
         string memory _storeName,
@@ -47,6 +68,18 @@ contract Store {
         storeOwner = _storeOwner;
         feePercent = _feePercent;
         storeAcc = 0;
+    }
+
+    // Function to list an item
+    function listItem(string memory _name, uint256 _price, string memory _image) public {
+        require(bytes(_name).length > 0, "Item name is required");
+        require(_price > 0, "Item price must be greater than zero");
+        require(bytes(_image).length > 0, "Item image is required");
+
+        itemCount++;
+        items[itemCount] = Item(itemCount, msg.sender, _name, _price, _image, false);
+
+        emit ItemListed(itemCount, msg.sender, _name, _price, _image, block.timestamp);
     }
 
     // Performing sales payment

@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Web3 from "web3";
 import { AppBar, Toolbar, Typography, Container, Button, Grid, Paper, List, ListItem, ListItemText, TextField } from "@mui/material";
+import Store from "./shared/abis/Store.json";
 
 const App = () => {
   const [account, setAccount] = useState("");
@@ -10,6 +11,20 @@ const App = () => {
   const [items, setItems] = useState([]);
   const [cart, setCart] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [storeContract, setStoreContract] = useState(null);
+
+  useEffect(() => {
+    const init = async () => {
+      if (window.ethereum) {
+        const web3 = new Web3(window.ethereum);
+        const networkId = await web3.eth.net.getId();
+        const deployedNetwork = Store.networks[networkId];
+        const contract = new web3.eth.Contract(Store.abi, deployedNetwork && deployedNetwork.address);
+        setStoreContract(contract);
+      }
+    };
+    init();
+  }, []);
 
   const connectWallet = async () => {
     if (window.ethereum) {
@@ -34,11 +49,18 @@ const App = () => {
 
     const imageUrl = URL.createObjectURL(itemImage);
     const newItem = { name: itemName, price: itemPrice, image: imageUrl, sold: false };
-    setItems([...items, newItem]);
-    setItemName("");
-    setItemPrice("");
-    setItemImage(null);
-    alert("Item listed successfully on the blockchain!");
+
+    try {
+      await storeContract.methods.listItem(itemName, itemPrice, imageUrl).send({ from: account });
+      setItems([...items, newItem]);
+      setItemName("");
+      setItemPrice("");
+      setItemImage(null);
+      alert("Item listed successfully on the blockchain!");
+    } catch (error) {
+      console.error("Error listing item", error);
+      alert("Failed to list item on the blockchain.");
+    }
   };
 
   const addToCart = (index) => {
