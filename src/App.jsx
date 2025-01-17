@@ -48,7 +48,7 @@ const App = () => {
     }
 
     const imageUrl = URL.createObjectURL(itemImage);
-    const newItem = { name: itemName, price: itemPrice, image: imageUrl, sold: false };
+    const newItem = { name: itemName, price: itemPrice, image: imageUrl, sold: false, sellerAddress: account };
 
     try {
       await storeContract.methods.listItem(itemName, itemPrice, imageUrl).send({ from: account });
@@ -80,9 +80,18 @@ const App = () => {
     }
 
     const updatedItems = [...items];
-    cart.forEach((item) => {
-      const index = items.indexOf(item);
-      updatedItems[index].sold = true;
+    cart.forEach(async (item) => {
+
+      try {
+        await storeContract.methods.payNow(item.sellerAddress, "Buying").send({ from: account, value: item.itemPrice });
+        const index = items.indexOf(item);
+        updatedItems[index].sold = true;
+        alert("Item bought successfully from the blockchain!");
+      } catch (error) {
+        console.error("Error buying item", error);
+        alert("Failed to buy item on the blockchain.");
+      }
+
     });
     setItems(updatedItems);
     setCart([]);
