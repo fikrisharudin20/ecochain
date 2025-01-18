@@ -82,6 +82,15 @@ contract Store {
         emit ItemListed(itemCount, msg.sender, _name, _price, _image, block.timestamp);
     }
 
+    // Function to get all items
+    function getAllItems() public view returns (Item[] memory) {
+        Item[] memory allItems = new Item[](itemCount);
+        for (uint256 i = 1; i <= itemCount; i++) {
+            allItems[i - 1] = items[i];
+        }
+        return allItems;
+    }
+
     // Performing sales payment
     function payNow(address seller, string memory purpose)
         public

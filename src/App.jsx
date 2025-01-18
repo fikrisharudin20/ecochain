@@ -21,6 +21,9 @@ const App = () => {
         const deployedNetwork = Store.networks[networkId];
         const contract = new web3.eth.Contract(Store.abi, deployedNetwork && deployedNetwork.address);
         setStoreContract(contract);
+
+        const items = await contract.methods.getAllItems().call();
+        setItems(items);
       }
     };
     init();
@@ -80,23 +83,22 @@ const App = () => {
     }
 
     const updatedItems = [...items];
-    cart.forEach(async (item) => {
-
+    for (const item of cart) {
       try {
-        await storeContract.methods.payNow(item.sellerAddress, "Buying").send({ from: account, value: item.itemPrice });
-        const index = items.indexOf(item);
+        await storeContract.methods.payNow(item.sellerAddress, "Buying").send({ from: account, value: Web3.utils.toWei(item.price.toString(), 'ether') });
+        const index = items.findIndex(i => i.id === item.id);
         updatedItems[index].sold = true;
-        alert("Item bought successfully from the blockchain!");
+        alert(`Item ${item.name} bought successfully from the blockchain!`);
       } catch (error) {
         console.error("Error buying item", error);
-        alert("Failed to buy item on the blockchain.");
+        alert(`Failed to buy item ${item.name} on the blockchain.`);
       }
+    }
 
-    });
     setItems(updatedItems);
     setCart([]);
     setTotalPrice(0);
-    alert("Items purchased successfully!");
+    alert("All items in the cart purchased successfully!");
   };
 
   return (
@@ -156,7 +158,7 @@ const App = () => {
               <Typography variant="h6">Items</Typography>
               <List>
                 {items.length > 0 ? (
-                  items.map((item, index) => (
+                  items.filter(item => !item.sold).map((item, index) => (
                     <ListItem key={index}>
                       <img src={item.image} alt={item.name} style={{ width: 50, height: 50, marginRight: 16 }} />
                       <ListItemText primary={item.name} secondary={`Price: ${item.price}`} />
