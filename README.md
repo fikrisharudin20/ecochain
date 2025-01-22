@@ -2,7 +2,6 @@
 
 Ecochain is a decentralized e-commerce platform designed to reduce transaction fees, enhance transparency, and improve scalability using blockchain technology. By leveraging Ethereum Layer 2 solutions like Polygon, the platform ensures cost-effective and secure fund transfers for buyers, sellers, and store owners.
 
----
 
 ## **Features**
 - **Low Transaction Fees**: Only 2% fee for store owners, with over 99% cost savings compared to traditional systems.
@@ -10,7 +9,6 @@ Ecochain is a decentralized e-commerce platform designed to reduce transaction f
 - **Robust Error Handling**: Provides clear feedback for invalid inputs and unauthorized actions.
 - **Smart Contract Automation**: Secure and automated fund distribution among stakeholders.
 
----
 
 ## **Tech Stack**
 - **Blockchain**: Ethereum, Polygon (Layer 2)
@@ -19,8 +17,8 @@ Ecochain is a decentralized e-commerce platform designed to reduce transaction f
 - **Frontend**: React.js
 - **Wallet Integration**: MetaMask
 - **Programming Languages**: JavaScript
+- **IPFS**: Infura
 
----
 
 ## **Installation and Setup**
 
