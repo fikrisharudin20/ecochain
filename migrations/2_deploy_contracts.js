@@ -4,7 +4,7 @@ module.exports = async (deployer) => {
   const [_feeAccount] = await web3.eth.getAccounts()
 
   const _name = 'owner'
-  const _feePercent = 10
+  const _feePercent = 2
 
   await deployer.deploy(
     Store,
